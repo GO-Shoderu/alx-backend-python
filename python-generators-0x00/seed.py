@@ -198,3 +198,50 @@ def insert_data(connection, csv_path: str):
             pass
     except Exception as ex:
         print(f"[insert_data] General Error: {ex}")
+
+def stream_users(connection, batch_size: int = 20):
+    """
+        Generator that streams rows from the user_data table lazily.
+
+        - Uses a server-side cursor (non-buffered) so we don't load all rows into memory.
+        - Fetches in batches, then yields one row at a time.
+        - Yields dictionaries: {'user_id': ..., 'name': ..., 'email': ..., 'age': ...}
+    """
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        cursor.execute("SELECT user_id, name, email, age FROM user_data")
+
+        while True:
+            rows = cursor.fetchmany(batch_size)
+            if not rows:
+                break
+            for row in rows:
+                # Yield one-by-one (this is the generator behavior)
+                yield row
+    finally:
+        cursor.close()
+
+
+def stream_users_where(connection, where_sql: str = "", params: tuple = (), batch_size: int = 20):
+    """
+        Advanced variant: stream with a WHERE clause and parameters.
+    """
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        base = "SELECT user_id, name, email, age FROM user_data"
+        if where_sql.strip():
+            base += f" WHERE {where_sql}"
+        cursor.execute(base, params)
+
+        while True:
+            rows = cursor.fetchmany(batch_size)
+            if not rows:
+                break
+            for row in rows:
+                yield row
+    finally:
+        cursor.close()
