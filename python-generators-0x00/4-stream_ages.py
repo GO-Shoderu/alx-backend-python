@@ -18,7 +18,6 @@ def stream_user_ages():
     cur.execute("SELECT age FROM user_data")
 
     for (age,) in cur:
-        # Convert Decimal('xx') -> int for computation
         yield int(age) if isinstance(age, Decimal) else age
 
     cur.close()
