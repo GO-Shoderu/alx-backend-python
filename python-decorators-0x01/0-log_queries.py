@@ -1,3 +1,4 @@
+from datetime import datetime
 import sqlite3
 import functools
 
@@ -9,7 +10,8 @@ def log_queries(fn):
         if sql is None and len(args) > 0:
             sql = args[0]
 
-        print(f"[SQL] {sql}")
+        ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"[{ts}] SQL: {sql}")
 
         return fn(*args, **kwargs)
     
