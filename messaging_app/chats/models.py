@@ -14,6 +14,18 @@ from django.db import models
 class User(AbstractUser):
     """
         Custom user model extending Django's AbstractUser.
+
+        Inherits built-in fields like:
+        - password
+        - first_name
+        - last_name
+        - email
+
+        Adds extra fields:
+        - user_id (UUID primary key)
+        - phone_number
+        - role (guest/host/admin)
+        - created_at
     """
 
     user_id = models.UUIDField(
