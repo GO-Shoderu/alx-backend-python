@@ -39,16 +39,21 @@ class TestGetJson(unittest.TestCase):
         self.assertEqual(result, test_payload)
 
 class TestMemoize(unittest.TestCase):
+    """Test cases for utils.memoize decorator."""
 
     def test_memoize(self):
+        """Test that memoize caches the result of a_method."""
 
         class TestClass:
+            """Simple class to test memoization."""
 
             def a_method(self):
+                """Return a constant value."""
                 return 42
 
             @memoize
             def a_property(self):
+                """Return result of a_method, but memoized."""
                 return self.a_method()
 
         test_obj = TestClass()
