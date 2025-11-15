@@ -126,3 +126,27 @@ This task focused on unit‑testing the `GithubOrgClient.has_license` static met
 
 * `test_client.py`
 
+---
+
+## Task 6: Integration Test Setup (Fixtures)
+
+In this task, I prepared the integration testing environment for `GithubOrgClient.public_repos`.
+
+### What I Did
+
+* Used `@parameterized_class` to load fixture data from `fixtures.py`:
+
+  * `org_payload`
+  * `repos_payload`
+  * `expected_repos`
+  * `apache2_repos`
+* Implemented `setUpClass` to:
+
+  * Patch `requests.get` once for the whole class.
+  * Configure `side_effect` so different URLs return the correct fixture payload (`org_payload` vs. `repos_payload`).
+* Implemented `tearDownClass` to stop the patcher.
+
+### File:
+
+* `test_client.py`
+
