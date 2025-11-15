@@ -25,11 +25,11 @@ In this task, I implemented unit tests for the `utils.access_nested_map` functio
 
 ---
 
-## 📌 Task 1: Parameterize a Unit Test (Exception Cases)
+## Task 1: Parameterize a Unit Test (Exception Cases)
 
 In this task, I added tests to verify that `utils.access_nested_map` raises the correct `KeyError` when the provided path is invalid.
 
-### ✔ What I Did
+### What I Did
 - Implemented `test_access_nested_map_exception` in the `TestAccessNestedMap` class.
 - Used `@parameterized.expand` to cover two invalid path scenarios:
   - `nested_map = {}`, `path = ("a",)`
@@ -37,5 +37,23 @@ In this task, I added tests to verify that `utils.access_nested_map` raises the 
 - Used `assertRaises` as a context manager to assert that a `KeyError` is raised.
 - Verified that the exception message (the missing key) matches the expected value using `context.exception.args[0]`.
 
-### 📁 File:
+### File:
+- `test_utils.py`
+
+## Task 2: Mock HTTP Calls for `get_json`
+
+In this task, I wrote unit tests for the `utils.get_json` function without making real HTTP requests.
+
+### What I Did
+- Created a `TestGetJson` class inheriting from `unittest.TestCase`.
+- Used `@parameterized.expand` to test multiple `(url, payload)` combinations:
+  - `test_url = "http://example.com"`, `test_payload = {"payload": True}`
+  - `test_url = "http://holberton.io"`, `test_payload = {"payload": False}`
+- Used `unittest.mock.patch` to patch `requests.get` so that:
+  - It returns a mock response whose `json()` method returns `test_payload`.
+- Asserted that:
+  - `requests.get` was called exactly once per test with the correct `test_url`.
+  - `get_json(test_url)` returned the expected `test_payload`.
+
+### File:
 - `test_utils.py`
