@@ -150,3 +150,28 @@ In this task, I prepared the integration testing environment for `GithubOrgClien
 
 * `test_client.py`
 
+
+---
+
+## Task 7: Integration Tests for public_repos
+
+This task required writing integration tests to verify the end‑to‑end behavior of `GithubOrgClient.public_repos`.
+
+### What I Did
+
+#### **test_public_repos**
+
+* Instantiated `GithubOrgClient`.
+* Called `public_repos()` with **no license filter**.
+* Asserted that the result matched `expected_repos` from fixtures.
+
+#### **test_public_repos_with_license**
+
+* Called `public_repos(license="apache-2.0")`.
+* Asserted that the result matched the subset of repos (`apache2_repos`) with that license.
+
+These tests rely on the patched `requests.get` from `setUpClass`, making them true integration tests.
+
+### File:
+
+* `test_client.py`
