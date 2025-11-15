@@ -81,3 +81,29 @@ This task required testing the `memoize` decorator from `utils.py`, ensuring tha
 ### 📁 File:
 
 * `test_utils.py`
+
+---
+
+## 📌 Task 4: Mocking a Property (`_public_repos_url`)
+
+This task required unit testing the private property `GithubOrgClient._public_repos_url` by mocking its dependency (`GithubOrgClient.org`).
+
+### ✔ What I Did
+
+* Added `test_public_repos_url` inside `TestGithubOrgClient`.
+* Created a mocked payload containing a `repos_url`.
+* Used `patch` with `PropertyMock` to mock the `.org` property:
+
+  ```python
+  with patch("client.GithubOrgClient.org", new_callable=PropertyMock)
+  ```
+* Instantiated `GithubOrgClient` and accessed `_public_repos_url`.
+* Asserted that:
+
+  * The value returned by `_public_repos_url` matched the mocked `repos_url`.
+  * The mocked `.org` property was accessed exactly once.
+
+### 📁 File:
+
+* `test_client.py`
+
