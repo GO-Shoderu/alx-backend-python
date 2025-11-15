@@ -22,3 +22,20 @@ In this task, I implemented unit tests for the `utils.access_nested_map` functio
 ### File:
 
 * `test_utils.py`
+
+---
+
+## 📌 Task 1: Parameterize a Unit Test (Exception Cases)
+
+In this task, I added tests to verify that `utils.access_nested_map` raises the correct `KeyError` when the provided path is invalid.
+
+### ✔ What I Did
+- Implemented `test_access_nested_map_exception` in the `TestAccessNestedMap` class.
+- Used `@parameterized.expand` to cover two invalid path scenarios:
+  - `nested_map = {}`, `path = ("a",)`
+  - `nested_map = {"a": 1}`, `path = ("a", "b")`
+- Used `assertRaises` as a context manager to assert that a `KeyError` is raised.
+- Verified that the exception message (the missing key) matches the expected value using `context.exception.args[0]`.
+
+### 📁 File:
+- `test_utils.py`
