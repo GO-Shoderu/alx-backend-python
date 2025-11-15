@@ -60,11 +60,11 @@ In this task, I wrote unit tests for the `utils.get_json` function without makin
 
 ---
 
-## 📌 Task 3: Parameterize and Patch (Memoization)
+## Task 3: Parameterize and Patch (Memoization)
 
 This task required testing the `memoize` decorator from `utils.py`, ensuring that method results are cached after the first call.
 
-### ✔ What I Did
+### What I Did
 
 * Added a `TestMemoize` class to `test_utils.py`.
 * Defined a simple inner class `TestClass` with:
@@ -78,17 +78,17 @@ This task required testing the `memoize` decorator from `utils.py`, ensuring tha
   * Both returned values were `42`.
   * `a_method` was called **exactly once** due to memoization.
 
-### 📁 File:
+### File:
 
 * `test_utils.py`
 
 ---
 
-## 📌 Task 4: Mocking a Property (`_public_repos_url`)
+## Task 4: Mocking a Property (`_public_repos_url`)
 
 This task required unit testing the private property `GithubOrgClient._public_repos_url` by mocking its dependency (`GithubOrgClient.org`).
 
-### ✔ What I Did
+### What I Did
 
 * Added `test_public_repos_url` inside `TestGithubOrgClient`.
 * Created a mocked payload containing a `repos_url`.
@@ -103,7 +103,26 @@ This task required unit testing the private property `GithubOrgClient._public_re
   * The value returned by `_public_repos_url` matched the mocked `repos_url`.
   * The mocked `.org` property was accessed exactly once.
 
-### 📁 File:
+### File:
+
+* `test_client.py`
+
+---
+
+## Task 5: Test GithubOrgClient.has_license (Parameterized): Test GithubOrgClient.has_license (Parameterized)
+
+This task focused on unit‑testing the `GithubOrgClient.has_license` static method.
+
+### What I Did
+
+* Added a `test_has_license` method using `@parameterized.expand`.
+* Tested two cases:
+
+  * Repo with matching license → returns `True`.
+  * Repo with non‑matching license → returns `False`.
+* Asserted that output matched the expected value.
+
+### File:
 
 * `test_client.py`
 
