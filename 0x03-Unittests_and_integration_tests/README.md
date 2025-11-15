@@ -57,3 +57,27 @@ In this task, I wrote unit tests for the `utils.get_json` function without makin
 
 ### File:
 - `test_utils.py`
+
+---
+
+## 📌 Task 3: Parameterize and Patch (Memoization)
+
+This task required testing the `memoize` decorator from `utils.py`, ensuring that method results are cached after the first call.
+
+### ✔ What I Did
+
+* Added a `TestMemoize` class to `test_utils.py`.
+* Defined a simple inner class `TestClass` with:
+
+  * `a_method()` returning `42`.
+  * `a_property` decorated with `@memoize`.
+* Used `patch.object` to mock `TestClass.a_method` and monitor how many times it gets called.
+* Accessed `a_property` twice.
+* Asserted that:
+
+  * Both returned values were `42`.
+  * `a_method` was called **exactly once** due to memoization.
+
+### 📁 File:
+
+* `test_utils.py`
