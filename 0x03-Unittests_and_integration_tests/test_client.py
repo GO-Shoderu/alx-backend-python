@@ -113,3 +113,15 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def tearDownClass(cls):
         """Stop the requests.get patcher."""
         cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        """Integration test: public_repos without license filter."""
+        client = GithubOrgClient("google")
+        result = client.public_repos()
+        self.assertEqual(result, self.expected_repos)
+
+    def test_public_repos_with_license(self):
+        """Integration test: public_repos filtered by license."""
+        client = GithubOrgClient("google")
+        result = client.public_repos(license="apache-2.0")
+        self.assertEqual(result, self.apache2_repos)
