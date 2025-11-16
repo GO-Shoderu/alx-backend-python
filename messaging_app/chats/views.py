@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 """
 Viewsets for the messaging app.
 
@@ -8,7 +6,7 @@ Provides API endpoints for:
 - Listing and sending messages within conversations
 """
 
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, filters
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.response import Response
 
@@ -26,6 +24,10 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
     serializer_class = ConversationSerializer
     permission_classes = [permissions.IsAuthenticated]
+    # Use filters to allow searching conversations by participant username or email
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["participants__username", "participants__email"]
+    ordering_fields = ["created_at"]
 
     def get_queryset(self):
         """
@@ -83,6 +85,10 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
+    # Use filters to allow searching and ordering messages
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["message_body", "sender__username", "sender__email"]
+    ordering_fields = ["sent_at"]
 
     def get_queryset(self):
         """
@@ -109,7 +115,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         Expected payload:
         {
             "conversation": "<conversation_id>",
-            "sender_id": "<user_id>",  # optional, we will override with request.user
+            "sender_id": "<user_id>",  # optional, will be overridden
             "message_body": "Hello!"
         }
 
@@ -123,4 +129,3 @@ class MessageViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("You are not a participant in this conversation.")
 
         serializer.save(sender=self.request.user)
-
