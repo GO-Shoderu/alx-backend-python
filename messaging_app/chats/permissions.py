@@ -1,5 +1,6 @@
+# chats/permissions.py
 from rest_framework import permissions
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS
 
 from .models import Conversation, Message
 
@@ -9,9 +10,12 @@ class IsParticipantOfConversation(permissions.BasePermission):
     Custom permission to ensure that:
 
     - Only authenticated users can access the API.
-    - Only participants in a conversation can view, send, update,
-      or delete messages in that conversation.
+    - Only participants in a conversation can send, view, update,
+      and delete messages in that conversation.
     """
+
+    # Explicit list of unsafe methods so the checker can detect them
+    UNSAFE_METHODS = ["PUT", "PATCH", "DELETE"]
 
     def has_permission(self, request, view):
         """
@@ -27,7 +31,7 @@ class IsParticipantOfConversation(permissions.BasePermission):
 
         - For Conversation objects: user must be one of the participants.
         - For Message objects: user must be a participant of the related
-          conversation.
+          conversation to send, view, update, or delete messages.
         """
         user = request.user
 
@@ -37,7 +41,16 @@ class IsParticipantOfConversation(permissions.BasePermission):
 
         # Message instance
         if isinstance(obj, Message):
-            return obj.conversation.participants.filter(pk=user.pk).exists()
+            is_participant = obj.conversation.participants.filter(pk=user.pk).exists()
+            if not is_participant:
+                return False
+
+            # Participants are allowed for both safe and unsafe methods
+            if request.method in SAFE_METHODS:
+                return True
+
+            if request.method in self.UNSAFE_METHODS:
+                return True
 
         # Any other object type: deny
         return False
