@@ -12,7 +12,7 @@ from rest_framework.response import Response
 
 from .models import User, Conversation, Message
 from .serializers import UserSerializer, ConversationSerializer, MessageSerializer
-from .permissions import IsConversationParticipant
+from .permissions import IsParticipantOfConversation
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -24,8 +24,8 @@ class ConversationViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = ConversationSerializer
-    # User must be authenticated AND a participant to access specific conversations
-    permission_classes = [permissions.IsAuthenticated, IsConversationParticipant]
+    # Use custom permission to ensure only participants can access objects
+    permission_classes = [IsParticipantOfConversation]
 
     # Use filters to allow searching conversations by participant username or email
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
@@ -91,8 +91,8 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = MessageSerializer
-    # User must be authenticated AND a participant in the conversation
-    permission_classes = [permissions.IsAuthenticated, IsConversationParticipant]
+    # Use custom permission to ensure only participants can work with messages
+    permission_classes = [IsParticipantOfConversation]
 
     # Use filters to allow searching and ordering messages
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
