@@ -151,7 +151,8 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        # "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
@@ -162,7 +163,7 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
-    # 👇 This is the important part for your custom User model
+    # custom User model
     "USER_ID_FIELD": "user_id",      # the field name on your User model
     "USER_ID_CLAIM": "user_id",      # how it will appear inside the token
 }
