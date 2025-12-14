@@ -14,6 +14,10 @@ from .models import User, Conversation, Message
 from .serializers import UserSerializer, ConversationSerializer, MessageSerializer
 from .permissions import IsParticipantOfConversation
 
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import MessageFilter
+
+
 # Explicit constant so the checker sees HTTP_403_FORBIDDEN
 FORBIDDEN_STATUS = status.HTTP_403_FORBIDDEN
 
@@ -97,8 +101,9 @@ class MessageViewSet(viewsets.ModelViewSet):
     # Include IsAuthenticated explicitly plus custom permission
     permission_classes = [permissions.IsAuthenticated, IsParticipantOfConversation]
 
-    # Use filters to allow searching and ordering messages
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    # Use filters to allow searching and ordering messages + django-filters
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_class = MessageFilter
     search_fields = ["message_body", "sender__username", "sender__email"]
     ordering_fields = ["sent_at"]
 
@@ -108,6 +113,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 
         Optional query param:
         - ?conversation=<conversation_id> to filter messages by conversation.
+        - MessageFilter adds more options: sender, sent_after, sent_before.
         """
         user = self.request.user
 
@@ -115,6 +121,8 @@ class MessageViewSet(viewsets.ModelViewSet):
             conversation__participants=user
         ).select_related("sender", "conversation")
 
+        # We keep this for backward compatibility; django-filters
+        # will apply additional filters on top.
         conversation_id = self.request.query_params.get("conversation")
         if conversation_id:
             queryset = queryset.filter(conversation_id=conversation_id)
@@ -122,23 +130,5 @@ class MessageViewSet(viewsets.ModelViewSet):
         return queryset.order_by("sent_at")
 
     def perform_create(self, serializer):
-        """
-        Send a message in an existing conversation.
-
-        Expected payload:
-        {
-            "conversation": "<conversation_id>",
-            "message_body": "Hello!"
-        }
-
-        The sender is always set to the authenticated user.
-        The user must be a participant of the conversation.
-        """
-        conversation = serializer.validated_data.get("conversation")
-
-        # Ensure the conversation exists and the user is a participant
-        if not conversation.participants.filter(pk=self.request.user.pk).exists():
-            # We still use PermissionDenied for proper DRF behavior
-            raise PermissionDenied("You are not a participant in this conversation.")
-
-        serializer.save(sender=self.request.user)
+        ...
+        # (keep your existing perform_create as is)
