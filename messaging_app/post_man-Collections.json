@@ -1,0 +1,262 @@
+{
+	"info": {
+		"_postman_id": "1288d65a-d90f-4833-b6d1-faeb636988cd",
+		"name": "Messaging App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21266702"
+	},
+	"item": [
+		{
+			"name": "Tokens",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"user1\",\n  \"password\": \"user1@password\"\n}\n\n// {\n//   \"username\": \"gosh\",\n//   \"password\": \"gosh@password\"\n// }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/token/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Conversations",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1NzIwMTk2LCJpYXQiOjE3NjU3MTk4OTYsImp0aSI6IjI5YWI0ZTMyZTMwZTRkMWY5YWE3ZjUzNTBjZmNlY2Y4IiwidXNlcl9pZCI6IjkxY2RjNzRhLTE4NWUtNDYzOC1hOWY2LTY1ODVhMmNhZjdjZCJ9.DlSjnu9lWfLjq9sizTnZQ0SetvMvG51PJG3xUJ6mO_8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"participants\": [\"e4420887-bb0b-444e-9b87-33c2c24e3776\"]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{messaging_app_bURL}}/api/conversations/",
+					"host": [
+						"{{messaging_app_bURL}}"
+					],
+					"path": [
+						"api",
+						"conversations",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Messages",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1NzIwNzI5LCJpYXQiOjE3NjU3MjA0MjksImp0aSI6IjNkMGU1YTRhMmMxMzRhOTdhMzdhODQ4NWMyNzNlYmYzIiwidXNlcl9pZCI6IjkxY2RjNzRhLTE4NWUtNDYzOC1hOWY2LTY1ODVhMmNhZjdjZCJ9.bdK6I05o7As2bi8llhXRYRFm7f7sUwlxwvgipn4d90M",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"conversation\": \"b50ca93b-7d02-4c3b-98eb-d84ca7238aa4\",\n  \"message_body\": \"Hello from user1!\",\n  \"sender_id\": \"91cdc74a-185e-4638-a9f6-6585a2caf7cd\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{messaging_app_bURL}}/api/messages/",
+					"host": [
+						"{{messaging_app_bURL}}"
+					],
+					"path": [
+						"api",
+						"messages",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pagination",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1NzIzNzc4LCJpYXQiOjE3NjU3MjM0NzgsImp0aSI6IjI3NzIxZjRiZjZhZTRmNzJiNDMzYzkwNDU3YzE4NWIyIiwidXNlcl9pZCI6IjkxY2RjNzRhLTE4NWUtNDYzOC1hOWY2LTY1ODVhMmNhZjdjZCJ9.hrUY2B7Qz7562f5eSHFZX0XsF0PKaq6FxOYUTaabUo8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{messaging_app_bURL}}/api/messages/?page=1",
+					"host": [
+						"{{messaging_app_bURL}}"
+					],
+					"path": [
+						"api",
+						"messages",
+						""
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Filtering_by_Conversation",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1NzIzNzc4LCJpYXQiOjE3NjU3MjM0NzgsImp0aSI6IjI3NzIxZjRiZjZhZTRmNzJiNDMzYzkwNDU3YzE4NWIyIiwidXNlcl9pZCI6IjkxY2RjNzRhLTE4NWUtNDYzOC1hOWY2LTY1ODVhMmNhZjdjZCJ9.hrUY2B7Qz7562f5eSHFZX0XsF0PKaq6FxOYUTaabUo8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}\n"
+				},
+				"url": {
+					"raw": "{{messaging_app_bURL}}/api/messages/?conversation=b50ca93b-7d02-4c3b-98eb-d84ca7238aa4",
+					"host": [
+						"{{messaging_app_bURL}}"
+					],
+					"path": [
+						"api",
+						"messages",
+						""
+					],
+					"query": [
+						{
+							"key": "conversation",
+							"value": "b50ca93b-7d02-4c3b-98eb-d84ca7238aa4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Filtering_by_Sender",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1NzI0MTc3LCJpYXQiOjE3NjU3MjM4NzcsImp0aSI6IjAzNTU1NzkwN2QxODRkZTc5MGU4ODc1NzE3Nzg5ZThmIiwidXNlcl9pZCI6IjkxY2RjNzRhLTE4NWUtNDYzOC1hOWY2LTY1ODVhMmNhZjdjZCJ9.C2A2ygsmkyXoHzoBlhJpAEArp3PJH1PAVSgfxHTFfqQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{messaging_app_bURL}}/api/messages/?sender=91cdc74a-185e-4638-a9f6-6585a2caf7cd",
+					"host": [
+						"{{messaging_app_bURL}}"
+					],
+					"path": [
+						"api",
+						"messages",
+						""
+					],
+					"query": [
+						{
+							"key": "sender",
+							"value": "91cdc74a-185e-4638-a9f6-6585a2caf7cd"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "messaging_app_bURL",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
