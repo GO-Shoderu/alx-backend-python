@@ -17,6 +17,8 @@ from .permissions import IsParticipantOfConversation
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import MessageFilter
 
+from .pagination import MessagePagination
+
 
 # Explicit constant so the checker sees HTTP_403_FORBIDDEN
 FORBIDDEN_STATUS = status.HTTP_403_FORBIDDEN
@@ -107,6 +109,8 @@ class MessageViewSet(viewsets.ModelViewSet):
     search_fields = ["message_body", "sender__username", "sender__email"]
     ordering_fields = ["sent_at"]
 
+    pagination_class = MessagePagination
+
     def get_queryset(self):
         """
         Return messages from conversations that the user participates in.
@@ -130,5 +134,23 @@ class MessageViewSet(viewsets.ModelViewSet):
         return queryset.order_by("sent_at")
 
     def perform_create(self, serializer):
-        ...
-        # (keep your existing perform_create as is)
+        """
+        Send a message in an existing conversation.
+
+        Expected payload:
+        {
+            "conversation": "<conversation_id>",
+            "message_body": "Hello!"
+        }
+
+        The sender is always set to the authenticated user.
+        The user must be a participant of the conversation.
+        """
+        conversation = serializer.validated_data.get("conversation")
+
+        # Ensure the conversation exists and the user is a participant
+        if not conversation.participants.filter(pk=self.request.user.pk).exists():
+            # We still use PermissionDenied for proper DRF behavior
+            raise PermissionDenied("You are not a participant in this conversation.")
+
+        serializer.save(sender=self.request.user)

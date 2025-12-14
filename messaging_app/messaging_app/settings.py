@@ -163,6 +163,8 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 20,
 }
 
+PAGINATION_BASE_CLASS = "rest_framework.pagination.PageNumberPagination"
+
 AUTH_USER_MODEL = "chats.User"
 
 SIMPLE_JWT = {
