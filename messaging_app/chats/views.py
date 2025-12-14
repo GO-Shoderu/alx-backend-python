@@ -12,6 +12,7 @@ from rest_framework.response import Response
 
 from .models import User, Conversation, Message
 from .serializers import UserSerializer, ConversationSerializer, MessageSerializer
+from .permissions import IsConversationParticipant
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -23,7 +24,9 @@ class ConversationViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = ConversationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # User must be authenticated AND a participant to access specific conversations
+    permission_classes = [permissions.IsAuthenticated, IsConversationParticipant]
+
     # Use filters to allow searching conversations by participant username or email
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["participants__username", "participants__email"]
@@ -54,18 +57,22 @@ class ConversationViewSet(viewsets.ModelViewSet):
         participant_ids = request.data.get("participants", [])
 
         if not isinstance(participant_ids, list):
-            raise ValidationError({"participants": "This field must be a list of user IDs."})
+            raise ValidationError(
+                {"participants": "This field must be a list of user IDs."}
+            )
 
         # Always include the current user
         participant_ids.append(str(request.user.user_id))
         # Remove duplicates
         participant_ids = list(set(participant_ids))
 
-        # Fetch users by the provided UUIDs
+        # Fetch users by the provided UUIDs (AUTH_USER_MODEL uses user_id as PK)
         users = User.objects.filter(user_id__in=participant_ids)
 
         if not users.exists():
-            raise ValidationError({"participants": "At least one valid participant is required."})
+            raise ValidationError(
+                {"participants": "At least one valid participant is required."}
+            )
 
         conversation = Conversation.objects.create()
         conversation.participants.set(users)
@@ -84,7 +91,9 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # User must be authenticated AND a participant in the conversation
+    permission_classes = [permissions.IsAuthenticated, IsConversationParticipant]
+
     # Use filters to allow searching and ordering messages
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["message_body", "sender__username", "sender__email"]
@@ -98,6 +107,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         - ?conversation=<conversation_id> to filter messages by conversation.
         """
         user = self.request.user
+
         queryset = Message.objects.filter(
             conversation__participants=user
         ).select_related("sender", "conversation")
@@ -115,7 +125,6 @@ class MessageViewSet(viewsets.ModelViewSet):
         Expected payload:
         {
             "conversation": "<conversation_id>",
-            "sender_id": "<user_id>",  # optional, will be overridden
             "message_body": "Hello!"
         }
 

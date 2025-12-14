@@ -5,13 +5,21 @@ services:
     image: postgres:16
     container_name: messaging_app_db
     environment:
-      POSTGRES_DB: messaging_app
-      POSTGRES_USER: messaging_user
-      POSTGRES_PASSWORD: messaging_password
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    container_name: messaging_app_adminer_container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
 
 volumes:
   postgres_data:
